@@ -17,8 +17,8 @@ from boto.s3.key import Key
 # read configs
 config = SafeConfigParser()
 config.read('config.py')
-acckey = config.get('fileput', 'acckey')
-seckey = config.get('fileput', 'seckey')
+access_key = config.get('fileput', 'access_key')
+secret_key = config.get('fileput', 'secret_key')
 bucket = config.get('fileput', 'bucket')
 
 # get file name from command line
@@ -26,17 +26,17 @@ filename = str(sys.argv[1])
 print "INFO: the local filename is " + filename
 
 # make HTTPs connection to S3
-conn = S3Connection(acckey, seckey)
+connection_handle = S3Connection(access_key, secret_key)
 
 # set the bucket name we're using
-buck = conn.get_bucket(bucket)
+bucket_handle = connection_handle.get_bucket(bucket)
 
 # create a new key in S3 to store data in
-key = Key(buck)
+key_handle = Key(bucket_handle)
 
 # set the name of the key (file) we're going to use
-key.key = "index.html"
+key_handle.key = str(sys.argv[2])
 
 # write the contents from a local file to S3 key (file)
-key.set_contents_from_filename(filename)
-print "INFO: wrote contents from " + filename + " to " + str(key.key)
+key_handle.set_contents_from_filename(filename)
+print "INFO: wrote contents from " + filename + " to " + str(key_handle.key)
